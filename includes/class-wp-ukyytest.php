@@ -123,7 +123,8 @@ class Wp_Ukyytest {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wp-ukyytest-public.php';
 
 		$this->loader = new Wp_Ukyytest_Loader();
-
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wp-ukyytest-functions.php';
+		$this->functions = new Ukyytest_Functions( $this->plugin_name, $this->version );
 	}
 
 	/**
@@ -152,11 +153,11 @@ class Wp_Ukyytest {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Wp_Ukyytest_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Wp_Ukyytest_Admin( $this->get_plugin_name(), $this->get_version(),$this->functions );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action( 'carbon_fields_register_fields', $plugin_admin, 'crb_attach_wp_ukyytest_options' );
 	}
 
 	/**
@@ -168,7 +169,7 @@ class Wp_Ukyytest {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Wp_Ukyytest_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Wp_Ukyytest_Public( $this->get_plugin_name(), $this->get_version(),$this->functions );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
